@@ -72,11 +72,13 @@ Create a text file in that directory and name it controller.php. Open it in your
  * @version   CVS: $Id: controller.php,v 1.4 2007-11-25 09:13:27 your-user-name Exp $
  * @link      http://avoir.uwc.ac.za
  */
+```
 
 Please note that you should have these document blocks in all your code, as this is how the code documentation is generated. Code that is not documented like this should not be committed to subversion as it will be removed with no warning, and it should not exist on your computer for more than 3-12 minutes. In general, it is best to write the doc blocks before you write any code.  
 
 Now start entering the controller code, beginning with the standard security check as follows:
 
+```php
 // security check - must be included in all scripts
 if (!
 /**
@@ -93,11 +95,13 @@ $GLOBALS['kewl_entry_point_run'])
         die("You cannot view this page directly");
 }
 // end security check
+```
 
 This prevents the code from being executed if it is not being run as a Chisimba controller. The name “kewl_entry_point_run” is used for backward compatibility with previous versions. Make sure you include the comments as well.
 
 The next set of lines in your controller is the PHPDocumentor style comments for the controller class.
 
+```php
 /**
 * 
 * Hello Chisimba
@@ -108,14 +112,17 @@ The next set of lines in your controller is the PHPDocumentor style comments for
 * @package hellochisimba
 *
 */
+```
 
 As noted, it is always a good practice to write these comments first, as code without well written comments will not be allowed into the Chisimba code base or any of its modules, and your code will be seen by other Chisimba programmers as being of amateur quality. You may get growled at on the mailing list as well, so to avoid this kind of embarrassment, write your comments first. We will return to the PHPDocumentor style comments later. For now, you can just enter them as above, replacing Yourname Here with your name.
 
 Now begins the real business of the code. Create the class definition as follows:
 
+```php
 class hellochisimba extends controller
 {
 }
+```
 
 Note that the class has the same name as the module and the directory that it is in, and must extend the framework controller class. This is always the case, otherwise the engine will not find and execute your module. Note also that the curly braces are underneath the letter “c” of the word class, and that all names are in lower case. All indents are 4 spaces (not tabs).  Violate this convention at your own peril. 
 
@@ -123,6 +130,7 @@ Please note that there might be a hellochisimba module already in the subversion
 
 All Chisimba classes that extend the framework have a constructor that is named init(), so creating that constructor is the next bit of code needed. A common use of the constructor is to set up default values for object properties, instantiate common objects, and in this case we will not be using it at all until we get to multilingual code.
 
+```php
     /**
     * 
     * Constructor for the hellochisimba controller
@@ -135,9 +143,11 @@ All Chisimba classes that extend the framework have a constructor that is named 
     {
 
     }
+```
 
 For the hello world example, we do not need any code in the init() method, so we can continue to the dispatch() method. A controller must have a dispatch() method that is invoked by the engine to process the logic of the controller.  The dispatch() method uses methods determined from the action  parameter of the  querystring and executes the appropriate method, returning its appropriate template. The dispatch() method of many older Chisimba modules use case statements instead or the $this->$method() approach. Either is acceptable, but this method produces cleaner code that is easier to read.  The code is as follows:
 
+```php
     /**
      * 
      * The standard dispatch method for the hellochisimba module.
@@ -165,9 +175,13 @@ For the hello world example, we do not need any code in the init() method, so we
         */
         return $this->$method();
     }
-All Chisimba dispatch() methods will have exactly the same code, so once you have written this, can write a dispatcher for any module.
+```
 
-There is only one method needed for this module, which is the __view() method. Note the double underscore (_ and _) in front of the method name, which is required for all methods that correspond to actions.
+All Chisimba `dispatch()` methods will have exactly the same code, so once you have written this, can write a dispatcher for any module.
+
+There is only one method needed for this module, which is the `__view()` method. Note the double underscore (\_ and \_) in front of the method name, which is required for all methods that correspond to actions.
+
+```php
     /**
     * 
     * Method corresponding to the view action. It sets the layout template
@@ -182,11 +196,13 @@ There is only one method needed for this module, which is the __view() method. N
         $this->setLayoutTemplate('layout_tpl.php');
         return 'default_tpl.php';
     }
+```
 
 The remainder of the controller is always the same, although additional methods will be included to cater for different actions. Keep the controller as simple as possible.
 
 The next method returns a template populated with an error message if the action is not found.
 
+```php
     /**
     * 
     * Method to return an error when the action is not a valid 
@@ -203,9 +219,11 @@ The next method returns a template populated with an error message if the action
           .": " . $action . "</h3>");
         return 'dump_tpl.php';
     }
+```
 
 The next method determines if the action is valid by examining if the corresponding method exists.
 
+```php
     /**
     * 
     * Method to check if a given action is a valid method
@@ -226,9 +244,11 @@ The next method determines if the action is valid by examining if the correspond
             return FALSE;
         }
     }
+```
 
 The next method converts the action into the appropriate method if it is a valid action.
 
+```php
     /**
     * 
     * Method to convert the action parameter into the name of 
@@ -247,9 +267,11 @@ The next method converts the action into the appropriate method if it is a valid
             return "__actionError";
         }
     }
+```
 
 The last method is a check to determine if the method requires the user to be logged in. In this case, we are allowing anonymous access to the view action, with all others requiring login. When you develop your module, you will use this if you need to allow access to certain methods when they are not logged in. For example, a blog generally requires public viewing and searching.
 
+```php
     /**
     *
     * This is a method to determine if the user has to 
@@ -275,9 +297,11 @@ The last method is a check to determine if the method requires the user to be lo
         }
      }
   }
+```
 
 Next, let us create three blocks, a wide one for the middle of our template, and two narrow ones for the left and right side of our default template. Blocks are a key feature of Chisimba, and unless there is good reason to do otherwise, all new code developed in Chisimba should render output as blocks. All blocks take the same form:
 
+```php
 <?php
 /**
  *
@@ -361,7 +385,7 @@ class block_hello1 extends object
     }
 }
 ?>
-
+```
 
 Blocks have at minimum a title property ($title), an init() method that may assign the title, and a show() method that returns the content of the block. The above code creates a $title, asigns the value “Hello” to it, and renders the text “Hello Chisimba” in the block content. Simple, no?
 
@@ -369,6 +393,7 @@ Create the above block, and name it block_hello1_class_inc.php. All blocks take 
 
 Create another block, and name it block_hello2_class_inc.php, and let it contain the following (or anything else you want to put into it):
 
+```php
 <?php
 /**
  *
@@ -452,9 +477,11 @@ class block_hello2 extends object
     }
 }
 ?>
+```
 
 Then create one more block, name it block_hello3_class_inc.php, and let it contain:
 
+```php
 <?php
 /**
  *
@@ -561,11 +588,13 @@ class block_hello3 extends object
     }
 }
 ?>
+```
 
 This will be a wide block, for display in the wide content area.
 
-Now let us look at the default_tpl.php Create this file in the templates/content directory of your module.
+Now let us look at the `default_tpl.php`. Create this file in the templates/content directory of your module.
 
+```php
 <?php
 ob_start();
 $objFix = $this->getObject('cssfixlength', 'htmlelements');
@@ -601,19 +630,23 @@ $pageContent = ob_get_contents();
 ob_end_clean();
 $this->setVar('pageContent', $pageContent);
 ?>
+```
 
 Let us analyse this template, which uses the JSON method to get blocks to render in the template. First there is the following code:
 
+```php
 <?php
 ob_start();
 $objFix = $this->getObject('cssfixlength', 'htmlelements');
 $objFix->fixThree();
 ?>
+```
 
 This [ob_start();] enables output buffering, which allows all output to be captured into a variable for transmission to the layout template. The next two lines load a class that fixes the length of the columns so that they are all the same, using Javascript, and then executes the code to do the column length adjustment. PHP is turned off at this point, as the next section is the HTML template.
 
 This code sets up a three column layout, with the layers nested within it corresponding to the left (Canvas_Content_Body_Region1), right (Canvas_Content_Body_Region3) and middle (Canvas_Content_Body_Region2) columns. Note that they must be presented in this order.
 
+```html
 <div id="threecolumn">
     <div id="Canvas_Content_Body_Region1">
     </div>
@@ -622,34 +655,41 @@ This code sets up a three column layout, with the layers nested within it corres
     <div id="Canvas_Content_Body_Region2">
     </div>
 </div>
+```
 
 Within each of these layers is the JSON that will render the block, and it takes the form:
 
+```json
         {
             "display" : "block",
             "module" : "hellochisimba",
             "block" : "hello2"
         }
+```
 
 Where the first item is either block or externalblock (not covered here), the second is the module from which to retrieve the block, and the third the name of the block.
 
 Finally we reactivate PHP capture the page contents into the variable $pageContent clean the output buffer, and pass the variable $pageContent to the layout template using Chisimba's $this->setVar method.
 
+```php
 <?php
 // Get the contents for the layout template
 $pageContent = ob_get_contents();
 ob_end_clean();
 $this->setVar('pageContent', $pageContent);
 ?>
+```
 
 Create the layout template as layout_tpl.php in the templates/layout directory of your module. It need only contain:
 
+```php
 <?php
 $objBlocks = $this->getObject('blockfilter', 'dynamiccanvas');
 $pageContent = $this->getVar('pageContent');
 $pageContent = $objBlocks->parse($pageContent);
 echo $pageContent;
 ?>
+```
 
 This instantiates the block filter from the dynamiccanvas module, and parses the page content against it, then renders the parsed content to the page using echo. This is what parses the JSON blocks to render the actual block content.
 
@@ -657,6 +697,8 @@ This instantiates the block filter from the dynamiccanvas module, and parses the
 We have one more step to perform, and that is that we have to make our module visible to the Module catalogue for installation. To do this, we need to create a register.conf file in the module's top-level directory. 
 
 Create a file called register.conf in the root directory of your module, and add the following code to it:
+
+```
 MODULE_ID: hellochisimba
 MODULE_NAME: Hello Chisimba
 MODULE_DESCRIPTION: A classic hello world type module to introduce you to chisimba.
@@ -673,11 +715,13 @@ BLOCK: hello2
 WIDEBLOCK: hello3
 
 TEXT: mod_hellochisimba_name|Hello Chisimba|Hello Chisimba
+```
 
 See the chapter on Module catalogue for an explanation of these strings. For now just cut and paste this into the register.conf file. Note the registration of the blocks hello1, hello2, and the wide block hello3.
 
 Now lets review the module from the MVC perspective. We do not have a model class for this module since we are not yet accessing any data. We have a view (template) and controller only, in addition to which we have a register configuration file. The files our module uses are as follows:
 
+```
 hellochisimba/controller.php
 hellochisimba/register.conf
  	hellochisimba/templates/content/default_tpl.php
@@ -685,6 +729,7 @@ hellochisimba/register.conf
 	hellochisimba/classes/block_hello1_class_inc.php
 	hellochisimba/classes/block_hello2_class_inc.php
 	hellochisimba/classes/block_hello3_class_inc.php
+```
 
 This is the bare minimum necessary to have a functioning module based on the JSON templates with block-based rendering. 
 
@@ -721,12 +766,14 @@ What happens?
 
 Not only that, but this method allows blocks to be exposed across multiple Chisimba servers. Try including the following in the middle area of your JSON template:
 
+```json
 { 
     "display" : "externalblock", 
     "server" : "http://www.dkeats.com/", 
     "module" : "blog", 
     "block" : "lastbytag" 
 }
+```
 
 This shows the last six blog posts on www.dkeats.com according to what ever the site owner has set as the default tag. Currently, this is 'chisimba'.  Now that is reusability of objects on steroids. Coding all rendering as blocks will make Chisimba even more awesome than it already is at present.
 
@@ -747,20 +794,25 @@ Add this line to the register.conf file, and save it.
 
 To make this work, we need to introduce and add the framework language object, which comes from a helper module called language. First, add a property to hold the object:
 
+```php
 /**
 * @var $objLanguage String object property for holding the 
 * language object
 * @access public
 */
 public $objLanguage;
+```
 
 Then, instantiate the language object in our init() method of the controller. Note, that we instantiate it here so it is available to other methods, which we will add later. In most cases, we would instantiate the class close to where we use it. Insert the code below in the init() method of the controller.
 
+```php
 //Instantiate the language object
 $this->objLanguage = $this->getObject('language', 'language');
+```
 
 The init() method now contains the following:
 
+```php
 public function init()
 {
     //Instantiate the language object
@@ -768,17 +820,18 @@ public function init()
     //Assign the value of the greeting to the language element mod_hellochisimba_greeting
     $this->greeting = $this->objLanguage->languageText("mod_hellochisimba_greeting", "hellochisimba");
 }
+```
 
 Now if you go to your hellochisimba module, and select it from the menu, you will see that the interface displays:
 
 Language item not found: mod_hellochisimba_greeting from hellochisimba
 The reason for this is because you have effectively made a patch, but you have not run the patch through module catalogue. Therefore, you need to look in your register.conf file, and find the line that says
 
-MODULE_VERSION: 0.001
+	MODULE_VERSION: 0.001
 
 and change it to read
 
-MODULE_VERSION: 0.002
+	MODULE_VERSION: 0.002
 
 This increases the version number so that module catalogue can find it, and automatically apply your language patch. If you increase the final digit each time you add language elements, you will make sure that you never break the interface with missing language elements. Thus, patching interface elements is very simple in Chisimba.
 
@@ -793,30 +846,37 @@ To see the benefit of this we need to introduce another framework object, the us
 
 Rather than cluttering up the init() method with this kind of thing, let us create a method to parse this language element. Into that method, add the following line:
 
+```php
 // Get the user object
 $objUser = $this->getObject('user', 'security');
+```
 
 User is another framework element that comes from the security module. It provides a set of properties and methods for working with basic user information. Add the following lines to the method:
 
+```php
 // Get the first name of the logged in user
 $firstName = $objUser->getFirstName(); 
 // Get the user name of the logged in user
 $userName = $objUser->userName();
+```
 
 This will retrieve the first name and username of the current user, and assign them to variables.
 
 Then we can parse the language item to replace the codes with those values. The code to do that is shown:
 
+```php
 $rep = array(  
   'FIRSTNAME' => $firstName, 
   'USERNAME' => $userName);
 //Return the string with the codes replaced by the values
 return $this->objLanguage->code2Txt("mod_hellochisimba_helloperson", "hellochisimba", $rep);
+```
 
 First we create an array with indexes corresponding to the codes to be replaced, and assign them the values of $firstName and $userName. This array is then passed as a parameter to the code2Txt method of the language object.
 
 Now our method contains the following code:
 
+```php
 public function greetUser()
 {
         // Get the user object
@@ -833,10 +893,13 @@ public function greetUser()
         return $this->objLanguage->code2Txt("mod_hellochisimba_helloperson",
 		"hellochisimba", $rep); 
 }
+```
 
 Now it just remains to change our dispatch method to include:
 
+```php
 $this->greeting = $this->greetUser();
+```
 
 Reloading the Hello Chisimba now should produce:
 
